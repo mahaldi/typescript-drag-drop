@@ -52,11 +52,20 @@ class ProjectState extends State<Project>{
             ProjectStatus.Active
         )
         this.projects.push(newProject)
+        this.updateListener()
+    }
+    moveProject(projectId: string, newStatus: ProjectStatus) {
+        const project = this.projects.find(prj => prj.id === projectId)
+        if(project && project.status !== newStatus){
+            project.status = newStatus
+            this.updateListener()
+        }
+    }
+    private updateListener() {
         for(const lintenerFn of this.listeners) {
             lintenerFn(this.projects.slice())
         }
     }
-    
 }
 
 const projectState = ProjectState.getInstance()
@@ -141,12 +150,12 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements 
         this.renderContent()
     }
     @autobind
-    dragEndHandler(event: DragEvent){
-        console.log(event)
+    dragEndHandler(_: DragEvent){
     }
     @autobind
     dragStartHandler(event: DragEvent){
-        console.log(event)
+        event.dataTransfer!.setData('text/plain', this.project.id)
+        event.dataTransfer!.effectAllowed = 'move'
 
     }
     configure() {
@@ -169,18 +178,25 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> implements Drag
         this.renderContent()
     }
     @autobind
-    dragOverHandler(_: DragEvent){
-        const listEl = this.element.querySelector('ul')!
-        listEl.classList.add('droppable')
+    dragOverHandler(event: DragEvent){
+        if(event.dataTransfer && event.dataTransfer.types[0] === 'text/plain') {
+            event.preventDefault() // default nya karna tidak allowed untuk dropping
+            const listEl = this.element.querySelector('ul')!
+            listEl.classList.add('droppable')
+        }
 
     }
     @autobind
     dragLeaveHandler(_: DragEvent){
+
         const listEl = this.element.querySelector('ul')!
         listEl.classList.remove('droppable')
 
     }
-    dropHandler(_: DragEvent) {
+    @autobind
+    dropHandler(event: DragEvent) {
+        const prjId = event.dataTransfer!.getData('text/plain')
+        projectState.moveProject(prjId, this.type === 'active' ? ProjectStatus.Active: ProjectStatus.Finished)
     }
     configure() {
         this.element.addEventListener('dragover', this.dragOverHandler)
