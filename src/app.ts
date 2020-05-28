@@ -69,10 +69,10 @@ function validate(validatabale: Validatable) {
         isValid = isValid && validatabale.value.length < validatabale.maxLength
     }
     if( validatabale.min != null && typeof validatabale.value === 'number') {
-        isValid = isValid && validatabale.value > validatabale.min
+        isValid = isValid && validatabale.value >= validatabale.min
     }
     if( validatabale.max != null && typeof validatabale.value === 'number') {
-        isValid = isValid && validatabale.value < validatabale.max
+        isValid = isValid && validatabale.value <= validatabale.max
     }
     return isValid
 }
@@ -116,7 +116,12 @@ abstract class Component<T extends HTMLElement,U extends HTMLElement> { // make 
 
 class ProjectItem extends Component<HTMLUListElement, HTMLLIElement>{
     private project: Project
-
+    get persons() {
+        if( this.project.people === 1) {
+            return '1 person'
+        }
+        return this.project.people + ' persons'
+    }
     constructor(hostId: string, project: Project) {
         super('single-project', hostId, false, project.id)
         this.project = project
@@ -128,7 +133,7 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement>{
     }
     renderContent() {
         this.element.querySelector('h2')!.textContent = this.project.title
-        this.element.querySelector('h3')!.textContent = this.project.people.toString()
+        this.element.querySelector('h3')!.textContent = this.persons +' assigned'
         this.element.querySelector('p')!.textContent = this.project.description
     }
 }
