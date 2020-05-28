@@ -31,9 +31,6 @@ class ProjectState extends State<Project>{
         this.instance = new ProjectState()
         return this.instance
     }
-    // addListener(listenerFn: Listener) {
-    //     this.listeners.push(listenerFn)
-    // }
     addProject(title: string, description: string, numOfPeople: number) {
         const newProject = new Project(
             Math.random().toString(),
@@ -137,21 +134,10 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement>{
 }
 
 class ProjectList extends Component<HTMLDivElement, HTMLElement>{
-    // templeteElement: HTMLTemplateElement
-    // hostElement: HTMLDivElement
-    // element: HTMLElement
     assignedProjects: Project[]
     constructor(private type: 'active' | 'finished') {
         super('project-list', 'app', false, `${type}-projects`)
-        // this.templeteElement = document.getElementById('project-list')! as HTMLTemplateElement;
-        // this.hostElement = document.getElementById('app')! as HTMLDivElement
         this.assignedProjects = []
-        // const importedNode = document.importNode(this.templeteElement.content, true)
-        // this.element = importedNode.firstElementChild as HTMLElement
-        // this.element.id = `${this.type}-projects`
-
-        
-        // this.attach()
         this.configure()
         this.renderContent()
     }
@@ -170,9 +156,6 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement>{
         const listEl = document.getElementById(`${this.type}-projects-list`)! as HTMLUListElement
         listEl.innerHTML = ''
         for( const prjItem of this.assignedProjects) {
-            // const listItem = document.createElement('li')
-            // listItem.textContent = prjItem.title
-            // listEl.appendChild(listItem)
             new ProjectItem(this.element.querySelector('ul')!.id, prjItem)
         }
     }
@@ -183,32 +166,19 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement>{
         this.element.querySelector('h2')!.textContent = this.type.toUpperCase() + 'PROJECTS'
     }
 
-    // private attach() {
-    //     this.hostElement.insertAdjacentElement('beforeend', this.element)
-    // }
 }
 
 class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {
-    // templeteElement: HTMLTemplateElement
-    // hostElement: HTMLDivElement
-    // element: HTMLFormElement
     titleInputElement: HTMLInputElement
     descriptionInputElement: HTMLInputElement
     peopleInputElement: HTMLInputElement
     constructor() {
         super('project-input', 'app', true, 'user-input')
-        // this.templeteElement = document.getElementById('project-input')! as HTMLTemplateElement;
-        // this.hostElement = document.getElementById('app')! as HTMLDivElement
-
-        // const importedNode = document.importNode(this.templeteElement.content, true)
-        // this.element = importedNode.firstElementChild as HTMLFormElement // form tag line 13
-        // this.element.id = 'user-input'
 
         this.titleInputElement = this.element.querySelector('#title')! as HTMLInputElement
         this.peopleInputElement = this.element.querySelector('#people')! as HTMLInputElement
         this.descriptionInputElement = this.element.querySelector('#description')! as HTMLInputElement
         this.configure()
-        // this.attach()
     }
 
     private gatherUserInput(): [string, string, number] | void { //[string, string, number] return value nya harus sesuai dengan urutan ini type nya
@@ -256,9 +226,6 @@ class ProjectInput extends Component<HTMLDivElement, HTMLFormElement> {
         this.element.addEventListener('submit', this.submitHandler)
     }
     renderContent(){}
-    // private attach() {
-    //     this.hostElement.insertAdjacentElement('afterbegin', this.element)
-    // }
 }
 
 const project = new ProjectInput()
